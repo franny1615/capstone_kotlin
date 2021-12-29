@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">AEM</string>
+    <string name="expense_management_title_string">Expense Management</string>
+    <string name="alpha_tech_by_signature">by alpha technologies</string>
+    <string name="page_title">Page Title</string>
+    <string name="date">Date</string>
+    <string name="add_account">add_account</string>
+    <string name="accounts">Accounts</string>
+    <string name="transactions">Transactions</string>
+    <string name="expenses">Expenses</string>
+    <string name="analyze">Analyze</string>
+    <string name="delete">delete</string>
+    <string name="account_name">Account Name</string>
+    <string name="id">Id:#</string>
+    <string name="dateFormat">mm/dd/yyyy</string>
+    <string name="categoryArray">[category,category2,category3]</string>
+    <string name="dollarAmount">$00.00</string>
+    <string name="merchant">Merchant</string>
+</resources>
