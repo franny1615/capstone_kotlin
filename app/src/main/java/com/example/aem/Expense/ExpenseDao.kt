@@ -1,4 +1,4 @@
-package com.example.aem
+package com.example.aem.Expense
 
 import androidx.room.Dao
 import androidx.room.Insert

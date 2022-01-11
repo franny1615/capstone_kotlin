@@ -1,9 +1,11 @@
-package com.example.aem;
+package com.example.aem.Transactions;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+
+import com.example.aem.AppDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +38,17 @@ public class TransactionViewModel extends AndroidViewModel {
     public List<TransactionEntity> getAllTransactionsByItemId(String item_id){
         Future<List<TransactionEntity>> f = executorService.submit(()->transactionsDao.loadAllTransactionsByItemId(item_id));
         List<TransactionEntity> b = null;
+        try {
+            b = f.get(200, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+    public TransactionEntity getbyTransactionId(String trans_id){
+        Future<TransactionEntity> f = executorService.submit(()->transactionsDao.getbyTransactionId(trans_id));
+        TransactionEntity b = null;
         try {
             b = f.get(200, TimeUnit.MILLISECONDS);
         } catch (Exception e) {

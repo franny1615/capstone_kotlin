@@ -1,4 +1,4 @@
-package com.example.aem
+package com.example.aem.Transactions
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aem.R
 
-class TransactionAdapter(private var dataSet: List<TransactionEntity>)
+class TransactionAdapter(var dataSet: List<TransactionEntity>)
     : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
     private lateinit var transactionsViewModel: TransactionViewModel
 

@@ -1,4 +1,4 @@
-package com.example.aem
+package com.example.aem.Accounts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aem.R
+import com.example.aem.Transactions.TransactionViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class AccountsAdapter(private var dataSet: List<AccountEntity>) :

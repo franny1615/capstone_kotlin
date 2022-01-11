@@ -1,10 +1,10 @@
-package com.example.aem
+package com.example.aem.Expense
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.aem.TransactionEntity
+import com.example.aem.Transactions.TransactionEntity
 
 @Entity(foreignKeys = [ForeignKey(entity = TransactionEntity::class,
                                 parentColumns = arrayOf("tranId"),

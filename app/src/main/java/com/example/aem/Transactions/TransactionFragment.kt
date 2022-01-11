@@ -1,7 +1,6 @@
-package com.example.aem
+package com.example.aem.Transactions
 
 import android.content.Context
-import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,11 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import kotlinx.coroutines.delay
+import com.example.aem.Accounts.AccountEntity
+import com.example.aem.Accounts.AccountViewModel
+import com.example.aem.Expense.Expense
+import com.example.aem.Expense.ExpenseViewModel
+import com.example.aem.R
 import org.json.JSONObject
 
 class TransactionFragment : Fragment() {
@@ -39,8 +42,13 @@ class TransactionFragment : Fragment() {
         val swipeGestures = object : SwipeGestures() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 if (direction == ItemTouchHelper.LEFT) {
-                    // call adapter method that saves to expense list
-                    // set background textview to say "mark as expense"
+                    val adapter = transactionRecyclerView.adapter as TransactionAdapter
+                    val transaction = adapter.dataSet[viewHolder.adapterPosition]
+                    val expense = Expense()
+                    expense.tranId = transaction.tranId
+                    val expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
+                    expenseViewModel.insertExpense(expense)
+                    Toast.makeText(layoutView.context,"Expensed",Toast.LENGTH_SHORT).show()
                 }
                 viewHolder.itemView.translationX = 0f
                 viewHolder.itemView.alpha = 1f

@@ -1,4 +1,4 @@
-package com.example.aem
+package com.example.aem.Accounts
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

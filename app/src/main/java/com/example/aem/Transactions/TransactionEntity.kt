@@ -1,4 +1,4 @@
-package com.example.aem
+package com.example.aem.Transactions
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

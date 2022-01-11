@@ -7,6 +7,9 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.aem.Accounts.AccountsFragment
+import com.example.aem.Expense.ExpenseFragment
+import com.example.aem.Transactions.TransactionFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavView)
         val accountsFragm = AccountsFragment()
         val transacsFragm = TransactionFragment()
+        val expensesFragm = ExpenseFragment()
         val currentPage = findViewById<TextView>(R.id.page_title_textview)
         currentPage.text = getText(R.string.accounts)
         setCurrentFragment(accountsFragm)
@@ -38,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_expense_button->{
                     currentPage.text = getText(R.string.expenses)
-                    setCurrentFragment(accountsFragm)
+                    setCurrentFragment(expensesFragm)
                 }
                 R.id.nav_transaction_button->{
                     currentPage.text = getText(R.string.transactions)

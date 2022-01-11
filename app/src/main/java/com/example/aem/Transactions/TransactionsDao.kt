@@ -1,4 +1,4 @@
-package com.example.aem
+package com.example.aem.Transactions
 
 import androidx.room.*
 
@@ -12,4 +12,7 @@ interface TransactionsDao {
 
     @Query("SELECT * FROM transactions_table_aem WHERE item_id = :item_id")
     fun loadAllTransactionsByItemId(item_id : String) : List<TransactionEntity>
+
+    @Query("SELECT * FROM transactions_table_aem WHERE tranId = :trans_id")
+    fun getbyTransactionId(trans_id : String) : TransactionEntity
 }

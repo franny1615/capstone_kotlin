@@ -1,4 +1,4 @@
-package com.example.aem
+package com.example.aem.Accounts
 
 import android.content.Context
 import android.os.Bundle
@@ -14,6 +14,7 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.aem.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.plaid.link.OpenPlaidLink
 import com.plaid.link.configuration.LinkTokenConfiguration
