@@ -61,9 +61,11 @@ class AccountsFragment: Fragment() {
             accountRecyclerView.layoutManager = LinearLayoutManager(layoutView.context)
             accountRecyclerView.adapter = accountAdapter
             accountRecyclerView.setHasFixedSize(true)
-            accountsViewModel.allAccounts.observe(viewLifecycleOwner, { accountAdapter.setData(
-                accountsViewModel.allAccountsRaw!!
-            )})
+            accountsViewModel.allAccounts.observe(viewLifecycleOwner) {
+                accountAdapter.setData(
+                    accountsViewModel.allAccountsRaw!!
+                )
+            }
         }
         return layoutView
     }

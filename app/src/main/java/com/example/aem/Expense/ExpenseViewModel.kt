@@ -2,6 +2,8 @@ package com.example.aem.Expense
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import com.example.aem.Accounts.AccountEntity
 import com.example.aem.AppDatabase
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -21,6 +23,13 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
     fun insertExpense(v: Expense) {
         executorService.execute {expenseDao.insertExpense(v)}
     }
+
+    fun deleteExpenseByTransactionId(id: String) {
+        executorService.execute {expenseDao.deleteExpenseByTranId(id)}
+    }
+
+    val allExpensesLiveData: LiveData<List<Expense>>
+        get() = expenseDao.getAllExpensesLiveData()
 
     val allExpenses : List<Expense>?
         get() {

@@ -28,6 +28,7 @@ class TransactionFragment : Fragment() {
     private lateinit var accountSelector: Spinner
     private lateinit var itemId: String
     private lateinit var transactionRecyclerView: RecyclerView
+    private val activityFrom = "transaction"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
@@ -38,25 +39,6 @@ class TransactionFragment : Fragment() {
         transactionsViewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         // set up spinner
         initSpinner(layoutView)
-        //
-        val swipeGestures = object : SwipeGestures() {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                if (direction == ItemTouchHelper.LEFT) {
-                    val adapter = transactionRecyclerView.adapter as TransactionAdapter
-                    val transaction = adapter.dataSet[viewHolder.adapterPosition]
-                    val expense = Expense()
-                    expense.tranId = transaction.tranId
-                    val expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
-                    expenseViewModel.insertExpense(expense)
-                    Toast.makeText(layoutView.context,"Expensed",Toast.LENGTH_SHORT).show()
-                }
-                viewHolder.itemView.translationX = 0f
-                viewHolder.itemView.alpha = 1f
-            }
-        }
-        val touchHelper = ItemTouchHelper(swipeGestures)
-        touchHelper.attachToRecyclerView(transactionRecyclerView)
-        //
         return layoutView
     }
 
@@ -77,7 +59,7 @@ class TransactionFragment : Fragment() {
                         loadingCircle.visibility = ProgressBar.VISIBLE
                         setListItems(position - 1, accounts, accounts[position - 1].itemId.toString())
                     } else {
-                        layoutView.findViewById<RecyclerView>(R.id.transactions_recyclerview).adapter = TransactionAdapter(ArrayList(0))
+                        layoutView.findViewById<RecyclerView>(R.id.transactions_recyclerview).adapter = TransactionAdapter(ArrayList(0),activityFrom)
                     }
                 }
             }
@@ -90,7 +72,7 @@ class TransactionFragment : Fragment() {
         val accessToken = accounts[position].accessToken
         val trans = transactionsViewModel.getAllTransactionsByItemId(itemId)
         if (trans.isNotEmpty()) {
-            transactionRecyclerView.adapter = TransactionAdapter(trans)
+            transactionRecyclerView.adapter = TransactionAdapter(trans,activityFrom)
             loadingCircle.visibility = ProgressBar.INVISIBLE
         } else {
             val params = HashMap<String, String>(2)
@@ -128,6 +110,6 @@ class TransactionFragment : Fragment() {
             transactionsViewModel.insertTransaction(trans)
         }
         loadingCircle.visibility = ProgressBar.INVISIBLE
-        transactionRecyclerView.adapter = TransactionAdapter(transactionsViewModel.getAllTransactionsByItemId(itemId))
+        transactionRecyclerView.adapter = TransactionAdapter(transactionsViewModel.getAllTransactionsByItemId(itemId),activityFrom)
     }
 }

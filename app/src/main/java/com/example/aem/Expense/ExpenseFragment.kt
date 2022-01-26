@@ -16,22 +16,32 @@ class ExpenseFragment: Fragment() {
     private lateinit var layoutView: View
     private lateinit var expenseViewModel: ExpenseViewModel
     private lateinit var transactionViewModel: TransactionViewModel
+    private val activityFrom = "expenses"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
         layoutView = inflater.inflate(R.layout.expense_fragment,container,false)
         expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
         transactionViewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
-        val expenses = expenseViewModel.allExpenses
-        if(expenses != null && expenses.isNotEmpty()){
-            val transactionsExpensed = arrayListOf(TransactionEntity())
-            for(expense in expenses){
-                transactionsExpensed.add(transactionViewModel.getbyTransactionId(expense.tranId.toString()))
+        val expenses = getTransactionsExpensed()
+        if(expenses.isNotEmpty()){
+            val adapter = TransactionAdapter(expenses,activityFrom)
+            expenseViewModel.allExpensesLiveData.observe(viewLifecycleOwner) {
+                adapter.setData(getTransactionsExpensed())
             }
-            // feed it to adapter and set it to recyclerview
-            val adapter = TransactionAdapter(transactionsExpensed)
             layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter = adapter
         }
         return layoutView
+    }
+
+    private fun getTransactionsExpensed() : List<TransactionEntity> {
+        val expenses = expenseViewModel.allExpenses
+        val transactionsExpensed = arrayListOf<TransactionEntity>()
+        if(expenses != null && expenses.isNotEmpty()) {
+            for (expense in expenses) {
+                transactionsExpensed.add(transactionViewModel.getbyTransactionId(expense.tranId.toString()))
+            }
+        }
+        return transactionsExpensed
     }
 }
