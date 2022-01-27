@@ -106,7 +106,7 @@ class TransactionFragment : Fragment() {
             trans.amount = transaction.getString("amount").toDouble()
             trans.date = transaction.getString("date")
             trans.merchant = transaction.getString("name")
-            trans.category = transaction.getJSONArray("category").toString()
+            trans.category = transaction.getJSONArray("category")[0].toString()
             transactionsViewModel.insertTransaction(trans)
         }
         loadingCircle.visibility = ProgressBar.INVISIBLE
