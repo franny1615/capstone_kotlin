@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,35 +27,33 @@ import kotlin.collections.HashMap
 class AccountsFragment: Fragment() {
     private lateinit var layoutView: View
     private val URL = "https://cap-backe.herokuapp.com"
-    private lateinit var accountsContext:Context
     private lateinit var loadingCircle: ProgressBar
     private lateinit var institutionName: String
-    private lateinit var accountsViewModel: AccountViewModel
-
-    private val plaidPopUpActivity = registerForActivityResult( OpenPlaidLink() ) { result: LinkResult ->
-        if (result is LinkSuccess) {
-            val (publicToken, metadata) = result
-            institutionName = metadata.institution!!.name
-            // came back from plaid api, save new token
-            loadingCircle.visibility = ProgressBar.VISIBLE
-            val params = HashMap<String,String>(1)
-            params.put("public_token",publicToken)
-            runInternetRequest(URL+"/api/set_access_token",params,::exchangedPublicToken,accountsContext)
-        }
-    }
+    private lateinit var plaidPopUpActivity: ActivityResultLauncher<LinkTokenConfiguration>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         layoutView = inflater.inflate(R.layout.accounts_fragment,container,false)
         loadingCircle = requireActivity().findViewById(R.id.loading_circle)
-        accountsContext = layoutView.context
-        // set button to initate first internet request
+        // set button to initiate first internet request
         layoutView.findViewById<FloatingActionButton>(R.id.accounts_add_button).setOnClickListener {
             loadingCircle.visibility = ProgressBar.VISIBLE
-            runInternetRequest(URL+"/api/create_link_token",HashMap(),::createLinkToken,accountsContext)
+            runInternetRequest("$URL/api/create_link_token",HashMap(),::createLinkToken,layoutView.context)
         }
         //
-        accountsViewModel = ViewModelProvider(requireActivity())[AccountViewModel::class.java]
+        plaidPopUpActivity = registerForActivityResult(OpenPlaidLink()) { result: LinkResult ->
+            if (result is LinkSuccess) {
+                val (publicToken, metadata) = result
+                institutionName = metadata.institution!!.name
+                // came back from plaid api, save new token
+                loadingCircle.visibility = ProgressBar.VISIBLE
+                val params = HashMap<String, String>(1)
+                params["public_token"] = publicToken
+                runInternetRequest("$URL/api/set_access_token",params,::exchangedPublicToken,layoutView.context)
+            }
+        }
+        //
+        val accountsViewModel = ViewModelProvider(requireActivity())[AccountViewModel::class.java]
         if (accountsViewModel.allAccountsRaw != null) {
             val accountAdapter = AccountsAdapter(accountsViewModel.allAccountsRaw!!)
             val accountRecyclerView = layoutView.findViewById<RecyclerView>(R.id.accounts_recyclerview)
@@ -91,6 +90,7 @@ class AccountsFragment: Fragment() {
 
     private fun exchangedPublicToken(resp: JSONObject) {
         val newAccount = AccountEntity()
+        val accountsViewModel = ViewModelProvider(requireActivity())[AccountViewModel::class.java]
         newAccount.institution = institutionName
         newAccount.itemId = resp.getString("item_id")
         newAccount.accessToken = resp.getString("access_token")

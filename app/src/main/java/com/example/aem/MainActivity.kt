@@ -7,6 +7,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.aem.Accounts.AccountsFragment
 import com.example.aem.Analyze.AnalyzeFragment
 import com.example.aem.Expense.ExpenseFragment
