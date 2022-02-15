@@ -47,8 +47,8 @@ class TransactionFragment : Fragment() {
         val accountViewModel = ViewModelProvider(requireActivity())[AccountViewModel::class.java]
         val accounts = accountViewModel.allAccountsRaw
         val accountAdapter = ArrayAdapter<String>(layoutView.context, android.R.layout.simple_spinner_dropdown_item)
-        accountAdapter.add("Select Account")
         if (accounts != null && accounts.isNotEmpty()) {
+            accountAdapter.add("Select Account")
             accounts.forEach {
                 accountAdapter.add(it.institution)
             }
@@ -63,8 +63,12 @@ class TransactionFragment : Fragment() {
                     }
                 }
             }
+            accountSelector.adapter = accountAdapter
+            accountSelector.setSelection(1);
+        } else {
+            accountAdapter.add("No accounts present...")
+            accountSelector.adapter = accountAdapter
         }
-        accountSelector.adapter = accountAdapter
     }
 
     private fun setListItems(position: Int, accounts: List<AccountEntity>, itId: String) {

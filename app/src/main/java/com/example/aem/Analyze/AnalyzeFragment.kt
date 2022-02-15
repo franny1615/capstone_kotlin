@@ -30,51 +30,13 @@ class AnalyzeFragment : Fragment() {
                 transactions.add(transacVM.getbyTransactionId(expense.tranId.toString()))
             }
             //
-            var total = 0.0
-            val categoryTotalsMap = mutableMapOf<String,Double>()
-            val totalTextView = layoutView.findViewById<TextView>(R.id.total_expense_textview)
-            for(transaction  in transactions) {
-                total += transaction.amount
-                if(categoryTotalsMap.containsKey(transaction.category)){
-                    categoryTotalsMap[transaction.category!!] = transaction.amount + categoryTotalsMap[transaction.category!!]!!
-                } else {
-                    categoryTotalsMap[transaction.category!!] = transaction.amount
-                }
-            }
-            val totText = "$$total"
-            totalTextView.text = totText
+            val totalsComponent = TotalsComponent(layoutView)
+            val map = totalsComponent.createMapping(transactions)
+            totalsComponent.applyViewsToLayout()
             //
-            val categoryTotalLayout = layoutView.findViewById<LinearLayout>(R.id.category_totals_linearlayout)
-            for(key in categoryTotalsMap.keys) {
-                val linearLayout = LinearLayout(layoutView.context)
-                linearLayout.orientation = LinearLayout.HORIZONTAL
-                val params = LinearLayout.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                    LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(10,10,10,10)
-                linearLayout.layoutParams = params
-                //
-                val textViewLayoutParams = LinearLayout.LayoutParams(
-                    0,
-                    LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-                )
-                textViewLayoutParams.weight = 0.5f
-                val categoryTextView = TextView(layoutView.context)
-                categoryTextView.setTextColor(Color.BLACK)
-                categoryTextView.text = key
-                categoryTextView.textSize = 20f
-                categoryTextView.layoutParams = textViewLayoutParams
-                val amountTextView = TextView(layoutView.context)
-                val amount = "$" + categoryTotalsMap[key]
-                amountTextView.text = amount
-                amountTextView.textSize = 20f
-                amountTextView.layoutParams = textViewLayoutParams
-                amountTextView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
-                linearLayout.addView(categoryTextView)
-                linearLayout.addView(amountTextView)
-                categoryTotalLayout.addView(linearLayout)
-            }
+            val barGraphLayout = layoutView.findViewById<LinearLayout>(R.id.bargraph_linearlayout)
+            val barChart = BarChart(map,layoutView.context,resources.displayMetrics.widthPixels)
+            barGraphLayout.addView(barChart.createGraph())
         }
         return layoutView
     }
