@@ -1,14 +1,11 @@
 package com.example.aem.Expense
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ExpenseDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertExpense(v : Expense) : Long
 
     @Query("DELETE FROM expense_table WHERE tranId = :id")

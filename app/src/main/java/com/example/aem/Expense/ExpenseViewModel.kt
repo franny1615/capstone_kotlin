@@ -21,7 +21,17 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun insertExpense(v: Expense) {
-        executorService.execute {expenseDao.insertExpense(v)}
+        var exists = false
+        if(allExpenses != null) {
+            for(expense in allExpenses!!) {
+                if(expense.tranId == v.tranId) {
+                    exists = true
+                }
+            }
+        }
+        if(!exists) {
+            executorService.execute {expenseDao.insertExpense(v)}
+        }
     }
 
     fun deleteExpenseByTransactionId(id: String) {

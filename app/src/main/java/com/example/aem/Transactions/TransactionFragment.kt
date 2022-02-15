@@ -64,7 +64,7 @@ class TransactionFragment : Fragment() {
                 }
             }
             accountSelector.adapter = accountAdapter
-            accountSelector.setSelection(1);
+            accountSelector.setSelection(1)
         } else {
             accountAdapter.add("No accounts present...")
             accountSelector.adapter = accountAdapter
@@ -113,7 +113,10 @@ class TransactionFragment : Fragment() {
             trans.category = transaction.getJSONArray("category")[0].toString()
             transactionsViewModel.insertTransaction(trans)
         }
+        val transactionsFromRoom = transactionsViewModel.getAllTransactionsByItemId(itemId)
         loadingCircle.visibility = ProgressBar.INVISIBLE
-        transactionRecyclerView.adapter = TransactionAdapter(transactionsViewModel.getAllTransactionsByItemId(itemId),activityFrom)
+        transactionRecyclerView.adapter = TransactionAdapter(transactionsFromRoom,activityFrom)
+        Thread.sleep(1000)
+        SumTransactionsDialogFragment(itemId).show(this.parentFragmentManager,"SumDialog")
     }
 }

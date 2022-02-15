@@ -26,7 +26,7 @@ class TotalsComponent(private val layoutView : View) {
 
     fun applyViewsToLayout() {
         val totalTextView = layoutView.findViewById<TextView>(R.id.total_expense_textview)
-        val totText = "$$total"
+        val totText = "$${"%.2f".format(total)}"
         totalTextView.text = totText
         //
         val categoryTotalLayout = layoutView.findViewById<LinearLayout>(R.id.category_totals_linearlayout)
@@ -51,7 +51,7 @@ class TotalsComponent(private val layoutView : View) {
             categoryTextView.textSize = 20f
             categoryTextView.layoutParams = textViewLayoutParams
             val amountTextView = TextView(layoutView.context)
-            val amount = "$" + totalsMapping[key]
+            val amount = "$" + "%.2f".format(totalsMapping[key])
             amountTextView.text = amount
             amountTextView.textSize = 20f
             amountTextView.layoutParams = textViewLayoutParams

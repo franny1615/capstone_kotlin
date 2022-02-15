@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.aem.R
 
 class BarChart(val map:Map<String, Double>, val context: Context, val width:Int){
     fun createGraph() : View {
@@ -32,7 +33,7 @@ class BarChart(val map:Map<String, Double>, val context: Context, val width:Int)
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        textView.text = "Visualization"
+        textView.text = context.getString(R.string.barGraphTitle)
         textView.textSize = 20f
         textView.setTypeface(null, Typeface.BOLD)
         textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
@@ -53,7 +54,7 @@ class BarChart(val map:Map<String, Double>, val context: Context, val width:Int)
         barView.addView(createText(key))
         barView.addView(createBar(data))
         if(data < width) {
-            barView.addView(createText("$${map[key]!!}"))
+            barView.addView(createText("$${"%.2f".format(data)}"))
         }
         return barView
     }
@@ -82,7 +83,7 @@ class BarChart(val map:Map<String, Double>, val context: Context, val width:Int)
                 width-180,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            val t = "$${data} ->"
+            val t = "$${"%.2f".format(data)} ->"
             barV.setTextColor(Color.WHITE)
             barV.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_END
             barV.text = t
