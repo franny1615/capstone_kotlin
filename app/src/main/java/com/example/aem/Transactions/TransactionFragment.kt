@@ -1,11 +1,13 @@
 package com.example.aem.Transactions
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -20,6 +22,12 @@ import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.R
 import org.json.JSONObject
+import java.sql.Date
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class TransactionFragment : Fragment() {
     private lateinit var layoutView: View
@@ -108,7 +116,8 @@ class TransactionFragment : Fragment() {
             val trans = TransactionEntity()
             trans.itemId = itemId
             trans.amount = transaction.getString("amount").toDouble()
-            trans.date = transaction.getString("date")
+            val date = LocalDate.parse(transaction.getString("date"), DateTimeFormatter.RFC_1123_DATE_TIME)
+            trans.date = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
             trans.merchant = transaction.getString("name")
             trans.category = transaction.getJSONArray("category")[0].toString()
             transactionsViewModel.insertTransaction(trans)

@@ -10,7 +10,7 @@ interface TransactionsDao {
     @Query("DELETE FROM transactions_table_aem WHERE item_id = :item_id")
     fun deleteTransactionsByItemId(item_id: String): Int
 
-    @Query("SELECT * FROM transactions_table_aem WHERE item_id = :item_id")
+    @Query("SELECT * FROM transactions_table_aem WHERE item_id = :item_id ORDER BY date DESC")
     fun loadAllTransactionsByItemId(item_id : String) : List<TransactionEntity>
 
     @Query("SELECT * FROM transactions_table_aem WHERE tranId = :trans_id")

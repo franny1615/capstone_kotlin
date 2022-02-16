@@ -20,7 +20,7 @@ class SumTransactionsDialogFragment(val itemId: String) : DialogFragment() {
             val selectedItems = ArrayList<Int>() // Where we track the selected items
             val builder = AlertDialog.Builder(it)
             builder.setTitle(R.string.sumDialogTitle)
-            builder.setMultiChoiceItems(categoryStringArray, null) { dialog, which, isChecked ->
+            builder.setMultiChoiceItems(categoryStringArray, null) { _, which, isChecked ->
                 if (isChecked) {
                     selectedItems.add(which)
                 } else if (selectedItems.contains(which)) {

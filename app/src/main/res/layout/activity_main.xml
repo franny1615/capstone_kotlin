@@ -50,13 +50,15 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/fragment"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/navigation_items"
-        app:itemTextColor="@color/white"
+        android:background="@color/black"
+        app:itemIconSize="24dp"
         app:itemIconTint="@color/design_default_color_primary"
-        android:background="@color/black"/>
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/navigation_items" />
 </LinearLayout>

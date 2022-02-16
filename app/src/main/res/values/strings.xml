@@ -24,4 +24,5 @@
     <string name="barGraphTitle">Visualization</string>
     <string name="date_range">Date Range</string>
     <string name="category">Category</string>
+    <string name="reset">Reset</string>
 </resources>

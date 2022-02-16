@@ -1,9 +1,11 @@
 package com.example.aem.Expense
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -11,9 +13,15 @@ import com.example.aem.R
 import com.example.aem.Transactions.TransactionAdapter
 import com.example.aem.Transactions.TransactionEntity
 import com.example.aem.Transactions.TransactionViewModel
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.*
 
 class ExpenseFragment: Fragment() {
     private lateinit var layoutView: View
@@ -21,7 +29,8 @@ class ExpenseFragment: Fragment() {
     private lateinit var transactionViewModel: TransactionViewModel
     private val activityFrom = "expenses"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         layoutView = inflater.inflate(R.layout.expense_fragment,container,false)
         expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
@@ -35,8 +44,12 @@ class ExpenseFragment: Fragment() {
             layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter = adapter
         }
         //
-        layoutView.findViewById<ExtendedFloatingActionButton>(R.id.date_picker).setOnClickListener {
+        layoutView.findViewById<FloatingActionButton>(R.id.date_picker).setOnClickListener {
             showDateRangePicker()
+        }
+        //
+        layoutView.findViewById<FloatingActionButton>(R.id.reset).setOnClickListener {
+            (layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter as TransactionAdapter).reset()
         }
         return layoutView
     }
@@ -49,15 +62,14 @@ class ExpenseFragment: Fragment() {
                 transactionsExpensed.add(transactionViewModel.getbyTransactionId(expense.tranId.toString()))
             }
         }
-        return transactionsExpensed
+        return transactionsExpensed.sortedByDescending { it.date }
     }
 
     private fun showDateRangePicker() {
         val builder = MaterialDatePicker.Builder.dateRangePicker()
+        val constrainBuilder = CalendarConstraints.Builder().setValidator(DateValidatorPointBackward.before(MaterialDatePicker.todayInUtcMilliseconds()))
+        builder.setCalendarConstraints(constrainBuilder.build())
         val picker = builder.build()
-        // TODO
-        // you can make a validator to limit dates that can be picked
-        // stackoverflow: https://stackoverflow.com/questions/66988040/limit-to-max-7-days-selection-in-material-date-range-picker-android
         picker.addOnCancelListener {
             picker.dismiss()
         }
@@ -65,9 +77,10 @@ class ExpenseFragment: Fragment() {
             picker.dismiss()
         }
         picker.addOnPositiveButtonClickListener {
-            // TODO
-            // it.first to it.second is the date range
-            // see if you can limit the date range by finding out the max and min of the date
+            val startDate = Instant.ofEpochMilli(it.first).atZone(ZoneId.systemDefault()).toLocalDate()
+            val endDate = Instant.ofEpochMilli(it.second).atZone(ZoneId.systemDefault()).toLocalDate()
+            val adapter: TransactionAdapter = layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter as TransactionAdapter
+            adapter.filter(startDate,endDate)
             picker.dismiss()
         }
         picker.show(this.parentFragmentManager,"date range picker")

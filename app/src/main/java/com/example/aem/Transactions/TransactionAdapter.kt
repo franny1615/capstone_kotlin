@@ -1,12 +1,14 @@
 package com.example.aem.Transactions
 
 import android.app.AlertDialog
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -14,8 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.R
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom: String) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
+    private lateinit var filteredList : ArrayList<TransactionEntity>
+    private var copyOfDataSet = dataSet
 
     class ViewHolder(view : View, activityFrom: String) : RecyclerView.ViewHolder(view) {
         val transactionTitle: TextView = view.findViewById(R.id.transaction_title)
@@ -26,7 +35,6 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
         val tranId: TextView = view.findViewById(R.id.trans_id)
         val layout: LinearLayout = view.findViewById(R.id.transaction_linearlayout)
         private val expenseViewModel = ViewModelProvider(view.context as FragmentActivity)[ExpenseViewModel::class.java]
-
         init {
             var message = ""
             var positiveButton = ""
@@ -47,8 +55,8 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
                 builder.apply {
                     setPositiveButton(positiveButton) { dialog,_ ->
                         when(activityFrom) {
-                            "transaction" -> doWhenIsTransactionActivity(view)
-                            "expenses" -> doWhenIsExpenseActivity(view)
+                            "transaction" -> doWhenIsTransactionActivity()
+                            "expenses" -> doWhenIsExpenseActivity()
                         }
                         dialog.dismiss()
                     }
@@ -64,13 +72,13 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
             }
         }
 
-        private fun doWhenIsTransactionActivity(view: View) {
+        private fun doWhenIsTransactionActivity() {
             val expense = Expense()
             expense.tranId = tranId.text.toString().toLong()
             expenseViewModel.insertExpense(expense)
         }
 
-        private fun doWhenIsExpenseActivity(view: View) {
+        private fun doWhenIsExpenseActivity() {
             expenseViewModel.deleteExpenseByTransactionId(tranId.text.toString())
         }
     }
@@ -89,14 +97,35 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val amnt = "$${dataSet.get(position).amount}"
-        viewHolder.transactionTitle.text = dataSet.get(position).merchant
+        viewHolder.transactionTitle.text = dataSet[position].merchant
         viewHolder.amount.text = amnt
-        viewHolder.category.text = dataSet.get(position).category
-        viewHolder.date.text = dataSet.get(position).date
-        viewHolder.itemId.text = dataSet.get(position).itemId
-        viewHolder.tranId.text = dataSet.get(position).tranId.toString()
+        viewHolder.category.text = dataSet[position].category
+        val date = LocalDate.parse(dataSet[position].date!!, DateTimeFormatter.ISO_LOCAL_DATE)
+        val dateFormatter = DateTimeFormatter.ofPattern("EEE, LLL dd, yyyy")
+        val formatted = date.format(dateFormatter)
+        viewHolder.date.text = formatted
+        viewHolder.itemId.text = dataSet[position].itemId
+        viewHolder.tranId.text = dataSet[position].tranId.toString()
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
+
+    fun filter(startDate : LocalDate, endDate: LocalDate) {
+        filteredList = arrayListOf()
+        // start >= transdate <= enddate
+        for(transaction in copyOfDataSet){
+            val transDate = LocalDate.parse(transaction.date!!, DateTimeFormatter.ISO_LOCAL_DATE)
+            val goodFromBelow = transDate.isAfter(startDate) || transDate.isEqual(startDate)
+            val goodFromAbove = transDate.isBefore(endDate) || transDate.isEqual(endDate)
+            if(goodFromAbove && goodFromBelow) {
+                filteredList.add(transaction)
+            }
+        }
+        setData(filteredList)
+    }
+
+    fun reset() {
+        setData(copyOfDataSet)
+    }
 }
