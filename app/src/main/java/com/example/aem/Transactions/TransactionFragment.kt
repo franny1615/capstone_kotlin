@@ -113,10 +113,18 @@ class TransactionFragment : Fragment() {
             trans.category = transaction.getJSONArray("category")[0].toString()
             transactionsViewModel.insertTransaction(trans)
         }
-        val transactionsFromRoom = transactionsViewModel.getAllTransactionsByItemId(itemId)
+        Thread.sleep(3000)
+        var transactionsFromRoom : List<TransactionEntity> = listOf()
+        for(i in 0..10) {
+            transactionsFromRoom = transactionsViewModel.getAllTransactionsByItemId(itemId)
+        }
         loadingCircle.visibility = ProgressBar.INVISIBLE
-        transactionRecyclerView.adapter = TransactionAdapter(transactionsFromRoom,activityFrom)
-        Thread.sleep(1000)
-        SumTransactionsDialogFragment(itemId).show(this.parentFragmentManager,"SumDialog")
+        if(transactionsFromRoom.isNotEmpty()) {
+            transactionRecyclerView.adapter = TransactionAdapter(transactionsFromRoom,activityFrom)
+            Thread.sleep(1000)
+            SumTransactionsDialogFragment(itemId).show(this.parentFragmentManager,"SumDialog")
+        } else {
+            Toast.makeText(layoutView.context, "Transaction Data not polled", Toast.LENGTH_LONG).show()
+        }
     }
 }

@@ -22,4 +22,6 @@
     <string name="ok">Add</string>
     <string name="sumDialogTitle">Import Expenses</string>
     <string name="barGraphTitle">Visualization</string>
+    <string name="date_range">Date Range</string>
+    <string name="category">Category</string>
 </resources>

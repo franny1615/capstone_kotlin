@@ -57,5 +57,6 @@
         app:labelVisibilityMode="labeled"
         app:menu="@menu/navigation_items"
         app:itemTextColor="@color/white"
-        app:itemIconTint="@color/white"/>
+        app:itemIconTint="@color/design_default_color_primary"
+        android:background="@color/black"/>
 </LinearLayout>

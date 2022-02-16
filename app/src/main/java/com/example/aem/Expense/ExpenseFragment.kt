@@ -11,6 +11,9 @@ import com.example.aem.R
 import com.example.aem.Transactions.TransactionAdapter
 import com.example.aem.Transactions.TransactionEntity
 import com.example.aem.Transactions.TransactionViewModel
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ExpenseFragment: Fragment() {
     private lateinit var layoutView: View
@@ -31,6 +34,10 @@ class ExpenseFragment: Fragment() {
             }
             layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter = adapter
         }
+        //
+        layoutView.findViewById<ExtendedFloatingActionButton>(R.id.date_picker).setOnClickListener {
+            showDateRangePicker()
+        }
         return layoutView
     }
 
@@ -43,5 +50,26 @@ class ExpenseFragment: Fragment() {
             }
         }
         return transactionsExpensed
+    }
+
+    private fun showDateRangePicker() {
+        val builder = MaterialDatePicker.Builder.dateRangePicker()
+        val picker = builder.build()
+        // TODO
+        // you can make a validator to limit dates that can be picked
+        // stackoverflow: https://stackoverflow.com/questions/66988040/limit-to-max-7-days-selection-in-material-date-range-picker-android
+        picker.addOnCancelListener {
+            picker.dismiss()
+        }
+        picker.addOnNegativeButtonClickListener{
+            picker.dismiss()
+        }
+        picker.addOnPositiveButtonClickListener {
+            // TODO
+            // it.first to it.second is the date range
+            // see if you can limit the date range by finding out the max and min of the date
+            picker.dismiss()
+        }
+        picker.show(this.parentFragmentManager,"date range picker")
     }
 }
