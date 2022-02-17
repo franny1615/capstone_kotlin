@@ -39,17 +39,21 @@ class ExpenseFragment: Fragment() {
         if(expenses.isNotEmpty()){
             val adapter = TransactionAdapter(expenses,activityFrom)
             expenseViewModel.allExpensesLiveData.observe(viewLifecycleOwner) {
-                adapter.setData(getTransactionsExpensed())
+                adapter.setData(expenses)
             }
             layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter = adapter
-        }
-        //
-        layoutView.findViewById<FloatingActionButton>(R.id.date_picker).setOnClickListener {
-            showDateRangePicker()
-        }
-        //
-        layoutView.findViewById<FloatingActionButton>(R.id.reset).setOnClickListener {
-            (layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter as TransactionAdapter).reset()
+            // filter by date
+            layoutView.findViewById<FloatingActionButton>(R.id.date_picker).setOnClickListener {
+                showDateRangePicker()
+            }
+            // reset
+            layoutView.findViewById<FloatingActionButton>(R.id.reset).setOnClickListener {
+                (layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter as TransactionAdapter).reset()
+            }
+            // filter by category
+            layoutView.findViewById<FloatingActionButton>(R.id.category_picker).setOnClickListener {
+                CategoryPickerDialogFragment(expenses,layoutView).show(this.parentFragmentManager,"category picker")
+            }
         }
         return layoutView
     }
@@ -80,7 +84,7 @@ class ExpenseFragment: Fragment() {
             val startDate = Instant.ofEpochMilli(it.first).atZone(ZoneId.systemDefault()).toLocalDate()
             val endDate = Instant.ofEpochMilli(it.second).atZone(ZoneId.systemDefault()).toLocalDate()
             val adapter: TransactionAdapter = layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter as TransactionAdapter
-            adapter.filter(startDate,endDate)
+            adapter.filterByDate(startDate,endDate)
             picker.dismiss()
         }
         picker.show(this.parentFragmentManager,"date range picker")

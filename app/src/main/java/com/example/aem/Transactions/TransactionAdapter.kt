@@ -25,6 +25,7 @@ import java.util.*
 class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom: String) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
     private lateinit var filteredList : ArrayList<TransactionEntity>
     private var copyOfDataSet = dataSet
+    private var setCategory = ""
 
     class ViewHolder(view : View, activityFrom: String) : RecyclerView.ViewHolder(view) {
         val transactionTitle: TextView = view.findViewById(R.id.transaction_title)
@@ -111,7 +112,7 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
 
-    fun filter(startDate : LocalDate, endDate: LocalDate) {
+    fun filterByDate(startDate : LocalDate, endDate: LocalDate) {
         filteredList = arrayListOf()
         // start >= transdate <= enddate
         for(transaction in copyOfDataSet){
@@ -119,13 +120,29 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
             val goodFromBelow = transDate.isAfter(startDate) || transDate.isEqual(startDate)
             val goodFromAbove = transDate.isBefore(endDate) || transDate.isEqual(endDate)
             if(goodFromAbove && goodFromBelow) {
-                filteredList.add(transaction)
+                if(setCategory == "") {
+                    filteredList.add(transaction)
+                } else if(transaction.category == setCategory) {
+                    filteredList.add(transaction)
+                }
             }
         }
         setData(filteredList)
     }
 
     fun reset() {
+        setCategory = ""
         setData(copyOfDataSet)
+    }
+
+    fun filterByCategory(category : String) {
+        filteredList = arrayListOf()
+        setCategory = category
+        for(transaction in copyOfDataSet) {
+            if(transaction.category!! == category) {
+                filteredList.add(transaction)
+            }
+        }
+        setData(filteredList)
     }
 }
