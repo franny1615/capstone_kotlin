@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Transaction
 import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.R
@@ -26,6 +27,7 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
     private lateinit var filteredList : ArrayList<TransactionEntity>
     private var copyOfDataSet = dataSet
     private var setCategory = ""
+    private var setDate = false
 
     class ViewHolder(view : View, activityFrom: String) : RecyclerView.ViewHolder(view) {
         val transactionTitle: TextView = view.findViewById(R.id.transaction_title)
@@ -127,22 +129,34 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
                 }
             }
         }
+        setDate = true
         setData(filteredList)
     }
 
     fun reset() {
         setCategory = ""
+        setDate = false
         setData(copyOfDataSet)
     }
 
     fun filterByCategory(category : String) {
-        filteredList = arrayListOf()
-        setCategory = category
-        for(transaction in copyOfDataSet) {
-            if(transaction.category!! == category) {
-                filteredList.add(transaction)
+        if(setDate) {
+            val list = arrayListOf<TransactionEntity>()
+            for(transaction in filteredList) {
+                if(transaction.category == category) {
+                    list.add(transaction)
+                }
             }
+            setData(list)
+        } else {
+            filteredList = arrayListOf()
+            setCategory = category
+            for(transaction in copyOfDataSet) {
+                if(transaction.category!! == category) {
+                    filteredList.add(transaction)
+                }
+            }
+            setData(filteredList)
         }
-        setData(filteredList)
     }
 }
