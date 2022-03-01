@@ -123,7 +123,7 @@ class TransactionFragment : Fragment() {
             transactionsViewModel.insertTransaction(trans)
         }
         Thread.sleep(3000)
-        var transactionsFromRoom : List<TransactionEntity> = listOf()
+        var transactionsFromRoom : ArrayList<TransactionEntity> = arrayListOf()
         for(i in 0..10) {
             transactionsFromRoom = transactionsViewModel.getAllTransactionsByItemId(itemId)
         }

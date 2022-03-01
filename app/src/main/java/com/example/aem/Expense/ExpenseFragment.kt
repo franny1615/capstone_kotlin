@@ -58,7 +58,7 @@ class ExpenseFragment: Fragment() {
         return layoutView
     }
 
-    private fun getTransactionsExpensed() : List<TransactionEntity> {
+    private fun getTransactionsExpensed() : ArrayList<TransactionEntity> {
         val expenses = expenseViewModel.allExpenses
         val transactionsExpensed = arrayListOf<TransactionEntity>()
         if(expenses != null && expenses.isNotEmpty()) {
@@ -66,7 +66,7 @@ class ExpenseFragment: Fragment() {
                 transactionsExpensed.add(transactionViewModel.getbyTransactionId(expense.tranId.toString()))
             }
         }
-        return transactionsExpensed.sortedByDescending { it.date }
+        return transactionsExpensed
     }
 
     private fun showDateRangePicker() {

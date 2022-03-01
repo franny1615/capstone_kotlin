@@ -23,13 +23,13 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom: String) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
+class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activityFrom: String) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
     private lateinit var filteredList : ArrayList<TransactionEntity>
     private var copyOfDataSet = dataSet
     private var setCategory = ""
     private var setDate = false
 
-    class ViewHolder(view : View, activityFrom: String) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view : View, activityFrom: String, val adapter: TransactionAdapter) : RecyclerView.ViewHolder(view) {
         val transactionTitle: TextView = view.findViewById(R.id.transaction_title)
         val amount: TextView = view.findViewById(R.id.transaction_amount)
         val category: TextView = view.findViewById(R.id.transaction_category)
@@ -83,16 +83,25 @@ class TransactionAdapter(var dataSet: List<TransactionEntity>, var activityFrom:
 
         private fun doWhenIsExpenseActivity() {
             expenseViewModel.deleteExpenseByTransactionId(tranId.text.toString())
+            var i = 0
+            for(transaction in adapter.dataSet) {
+                if(transaction.tranId == tranId.text.toString().toLong()) {
+                   break
+                }
+                i++
+            }
+            adapter.dataSet.removeAt(i)
+            adapter.notifyDataSetChanged()
         }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.transactions_cardview, viewGroup, false)
-        return ViewHolder(view,activityFrom)
+        return ViewHolder(view,activityFrom,this)
     }
 
-    fun setData(dataSet: List<TransactionEntity>){
+    fun setData(dataSet: ArrayList<TransactionEntity>){
         this.dataSet = dataSet
         notifyDataSetChanged()
     }

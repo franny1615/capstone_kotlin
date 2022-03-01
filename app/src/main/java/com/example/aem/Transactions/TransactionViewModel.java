@@ -9,6 +9,7 @@ import com.example.aem.AppDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,11 +36,11 @@ public class TransactionViewModel extends AndroidViewModel {
         executorService.execute(()->transactionsDao.deleteTransactionsByItemId(item_id));
     }
 
-    public List<TransactionEntity> getAllTransactionsByItemId(String item_id){
+    public ArrayList<TransactionEntity> getAllTransactionsByItemId(String item_id){
         Future<List<TransactionEntity>> f = executorService.submit(()->transactionsDao.loadAllTransactionsByItemId(item_id));
-        List<TransactionEntity> b = null;
+        ArrayList<TransactionEntity> b = new ArrayList<>();
         try {
-            b = f.get(200, TimeUnit.MILLISECONDS);
+            b.addAll(f.get(200, TimeUnit.MILLISECONDS));
         } catch (Exception e) {
             e.printStackTrace();
         }

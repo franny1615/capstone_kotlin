@@ -15,7 +15,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:weightSum="1">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/delete_button"
@@ -24,22 +25,23 @@
                 android:contentDescription="@string/delete"
                 android:src="@drawable/icon_delete_symbol"
                 app:maxImageSize="25dp"
-                app:fabSize="mini" />
+                app:fabSize="mini"
+                android:layout_weight="0.1"/>
             <TextView
                 android:id="@+id/account_institution_textview"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="0.7"
                 android:text="@string/account_name"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/account_id_textview"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="0.2"
                 android:text="@string/id"
                 android:textAlignment="textEnd"/>
         </LinearLayout>
