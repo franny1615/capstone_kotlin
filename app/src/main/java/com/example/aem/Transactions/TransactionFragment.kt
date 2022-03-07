@@ -111,29 +111,17 @@ class TransactionFragment : Fragment() {
 
     private fun insertTransactions(resp: JSONObject) {
         val transactions = resp.getJSONArray("transactions")
+        val transactionArray = ArrayList<TransactionEntity>()
         for (i in 0 until transactions.length()) {
             val transaction = transactions.getJSONObject(i)
-            val trans = TransactionEntity()
-            trans.itemId = itemId
-            trans.amount = transaction.getString("amount").toDouble()
             val date = LocalDate.parse(transaction.getString("date"), DateTimeFormatter.RFC_1123_DATE_TIME)
-            trans.date = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            trans.merchant = transaction.getString("name")
-            trans.category = transaction.getJSONArray("category")[0].toString()
+            val trans = TransactionEntity(itemId, date.format(DateTimeFormatter.ISO_LOCAL_DATE), transaction.getJSONArray("category")[0].toString(), transaction.getString("name"), transaction.getString("amount").toDouble())
             transactionsViewModel.insertTransaction(trans)
+            transactionArray.add(trans)
         }
-        Thread.sleep(3000)
-        var transactionsFromRoom : ArrayList<TransactionEntity> = arrayListOf()
-        for(i in 0..10) {
-            transactionsFromRoom = transactionsViewModel.getAllTransactionsByItemId(itemId)
-        }
+        transactionRecyclerView.adapter = TransactionAdapter(transactionArray,activityFrom)
+        Thread.sleep(600)
+        SumTransactionsDialogFragment(itemId).show(this.parentFragmentManager,"CategoryTotals")
         loadingCircle.visibility = ProgressBar.INVISIBLE
-        if(transactionsFromRoom.isNotEmpty()) {
-            transactionRecyclerView.adapter = TransactionAdapter(transactionsFromRoom,activityFrom)
-            Thread.sleep(1000)
-            SumTransactionsDialogFragment(itemId).show(this.parentFragmentManager,"SumDialog")
-        } else {
-            Toast.makeText(layoutView.context, "Transaction Data not polled", Toast.LENGTH_LONG).show()
-        }
     }
 }

@@ -13,8 +13,7 @@ import com.example.aem.Transactions.TransactionEntity
         tableName = "expense_table",
         indices = [Index(value = arrayOf("tranId"))]
 )
-class Expense {
+class Expense(var tranId: Long) {
     @PrimaryKey(autoGenerate = true)
     var expenseId = 0
-    var tranId:Long = 0L
 }

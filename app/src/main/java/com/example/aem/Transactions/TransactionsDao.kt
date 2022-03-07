@@ -15,4 +15,10 @@ interface TransactionsDao {
 
     @Query("SELECT * FROM transactions_table_aem WHERE tranId = :trans_id")
     fun getbyTransactionId(trans_id : String) : TransactionEntity
+
+    @Query("SELECT category,SUM(amount) as 'amount' FROM transactions_table_aem WHERE item_id = :item_id GROUP BY category")
+    fun getCategoryTotals(item_id: String) : List<CategoryTotal>
+
+    @Query("SELECT * FROM transactions_table_aem WHERE (item_id = :item_id) AND (category = :category)")
+    fun getTransactionsBasedOnCategoryAndItemId(item_id: String, category: String) : List<TransactionEntity>
 }

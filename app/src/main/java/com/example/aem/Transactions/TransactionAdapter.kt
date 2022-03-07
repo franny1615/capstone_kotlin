@@ -1,25 +1,18 @@
 package com.example.aem.Transactions
 
 import android.app.AlertDialog
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Transaction
 import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.R
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -34,8 +27,8 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
         val amount: TextView = view.findViewById(R.id.transaction_amount)
         val category: TextView = view.findViewById(R.id.transaction_category)
         val date: TextView = view.findViewById(R.id.transaction_date)
-        val itemId: TextView = view.findViewById(R.id.item_id)
-        val tranId: TextView = view.findViewById(R.id.trans_id)
+        var itemId = ""
+        var tranId = 0L
         val layout: LinearLayout = view.findViewById(R.id.transaction_linearlayout)
         private val expenseViewModel = ViewModelProvider(view.context as FragmentActivity)[ExpenseViewModel::class.java]
         init {
@@ -76,16 +69,14 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
         }
 
         private fun doWhenIsTransactionActivity() {
-            val expense = Expense()
-            expense.tranId = tranId.text.toString().toLong()
-            expenseViewModel.insertExpense(expense)
+            expenseViewModel.insertExpense(Expense(tranId))
         }
 
         private fun doWhenIsExpenseActivity() {
-            expenseViewModel.deleteExpenseByTransactionId(tranId.text.toString())
+            expenseViewModel.deleteExpenseByTransactionId(tranId.toString())
             var i = 0
             for(transaction in adapter.dataSet) {
-                if(transaction.tranId == tranId.text.toString().toLong()) {
+                if(transaction.tranId == tranId) {
                    break
                 }
                 i++
@@ -112,12 +103,12 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
         viewHolder.transactionTitle.text = dataSet[position].merchant
         viewHolder.amount.text = amnt
         viewHolder.category.text = dataSet[position].category
-        val date = LocalDate.parse(dataSet[position].date!!, DateTimeFormatter.ISO_LOCAL_DATE)
+        val date = LocalDate.parse(dataSet[position].date, DateTimeFormatter.ISO_LOCAL_DATE)
         val dateFormatter = DateTimeFormatter.ofPattern("EEE, LLL dd, yyyy")
         val formatted = date.format(dateFormatter)
         viewHolder.date.text = formatted
-        viewHolder.itemId.text = dataSet[position].itemId
-        viewHolder.tranId.text = dataSet[position].tranId.toString()
+        viewHolder.itemId = dataSet[position].itemId
+        viewHolder.tranId = dataSet[position].tranId
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -127,7 +118,7 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
         filteredList = arrayListOf()
         // start >= transdate <= enddate
         for(transaction in copyOfDataSet){
-            val transDate = LocalDate.parse(transaction.date!!, DateTimeFormatter.ISO_LOCAL_DATE)
+            val transDate = LocalDate.parse(transaction.date, DateTimeFormatter.ISO_LOCAL_DATE)
             val goodFromBelow = transDate.isAfter(startDate) || transDate.isEqual(startDate)
             val goodFromAbove = transDate.isBefore(endDate) || transDate.isEqual(endDate)
             if(goodFromAbove && goodFromBelow) {
@@ -161,7 +152,7 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
             filteredList = arrayListOf()
             setCategory = category
             for(transaction in copyOfDataSet) {
-                if(transaction.category!! == category) {
+                if(transaction.category == category) {
                     filteredList.add(transaction)
                 }
             }
