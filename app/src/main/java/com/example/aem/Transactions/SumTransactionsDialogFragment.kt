@@ -38,7 +38,12 @@ class SumTransactionsDialogFragment(val itemId: String) : DialogFragment() {
 
     private fun createCategoryCharSequence() : ArrayList<CharSequence> {
         val transactionVM = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
-        val categoryTotals = transactionVM.getCategoryTotals(itemId)
+        var categoryTotals = transactionVM.getCategoryTotals(itemId)
+        var tries = 0
+        while(categoryTotals.isEmpty() && (tries < 100)) {
+            categoryTotals = transactionVM.getCategoryTotals(itemId)
+            tries++
+        }
         val arrayVersion = arrayListOf<CharSequence>()
         for(category in categoryTotals) {
             val roundedAmount = "%.2f".format(category.amount)

@@ -120,7 +120,6 @@ class TransactionFragment : Fragment() {
             transactionArray.add(trans)
         }
         transactionRecyclerView.adapter = TransactionAdapter(transactionArray,activityFrom)
-        Thread.sleep(600)
         SumTransactionsDialogFragment(itemId).show(this.parentFragmentManager,"CategoryTotals")
         loadingCircle.visibility = ProgressBar.INVISIBLE
     }

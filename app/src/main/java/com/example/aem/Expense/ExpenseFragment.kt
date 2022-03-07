@@ -22,20 +22,20 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
+import kotlin.math.exp
 
 class ExpenseFragment: Fragment() {
     private lateinit var layoutView: View
-    private lateinit var expenseViewModel: ExpenseViewModel
-    private lateinit var transactionViewModel: TransactionViewModel
     private val activityFrom = "expenses"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         layoutView = inflater.inflate(R.layout.expense_fragment,container,false)
-        expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
-        transactionViewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
-        val expenses = getTransactionsExpensed()
+        val expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
+        val list = expenseViewModel.allExpensesAsTransactions
+        val expenses = arrayListOf<TransactionEntity>()
+        expenses.addAll(list)
         if(expenses.isNotEmpty()){
             val adapter = TransactionAdapter(expenses,activityFrom)
             expenseViewModel.allExpensesLiveData.observe(viewLifecycleOwner) {
@@ -56,17 +56,6 @@ class ExpenseFragment: Fragment() {
             }
         }
         return layoutView
-    }
-
-    private fun getTransactionsExpensed() : ArrayList<TransactionEntity> {
-        val expenses = expenseViewModel.allExpenses
-        val transactionsExpensed = arrayListOf<TransactionEntity>()
-        if(expenses != null && expenses.isNotEmpty()) {
-            for (expense in expenses) {
-                transactionsExpensed.add(transactionViewModel.getbyTransactionId(expense.tranId.toString()))
-            }
-        }
-        return transactionsExpensed
     }
 
     private fun showDateRangePicker() {

@@ -2,6 +2,7 @@ package com.example.aem.Expense
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.aem.Transactions.TransactionEntity
 
 @Dao
 interface ExpenseDao {
@@ -16,4 +17,7 @@ interface ExpenseDao {
 
     @Query("SELECT * FROM expense_table")
     fun getAllExpensesLiveData() : LiveData<List<Expense>>
+
+    @Query("SELECT * FROM transactions_table_aem INNER JOIN expense_table ON transactions_table_aem.tranId = expense_table.tranId")
+    fun getExpensesAsTransactionList() : List<TransactionEntity>
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.aem.Accounts.AccountEntity
 import com.example.aem.AppDatabase
+import com.example.aem.Transactions.TransactionEntity
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
@@ -22,11 +23,9 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
 
     fun insertExpense(v: Expense) {
         var exists = false
-        if(allExpenses != null) {
-            for(expense in allExpenses!!) {
-                if(expense.tranId == v.tranId) {
-                    exists = true
-                }
+        for(expense in allExpenses) {
+            if(expense.tranId == v.tranId) {
+                exists = true
             }
         }
         if(!exists) {
@@ -41,9 +40,15 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
     val allExpensesLiveData: LiveData<List<Expense>>
         get() = expenseDao.getAllExpensesLiveData()
 
-    val allExpenses : List<Expense>?
+    val allExpenses : List<Expense>
         get() {
-            val f: Future<List<Expense?>?>? = executorService.submit(expenseDao::getAllExpenses)
-            return f?.get(200, TimeUnit.MILLISECONDS) as List<Expense>?
+            val f: Future<List<Expense>> = executorService.submit(expenseDao::getAllExpenses)
+            return f.get(200, TimeUnit.MILLISECONDS) as List<Expense>
+        }
+
+    val allExpensesAsTransactions : List<TransactionEntity>
+        get() {
+            val future : Future<List<TransactionEntity>> = executorService.submit(expenseDao::getExpensesAsTransactionList)
+            return future.get(200,TimeUnit.MILLISECONDS)
         }
 }
