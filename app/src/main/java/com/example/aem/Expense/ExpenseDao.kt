@@ -18,6 +18,6 @@ interface ExpenseDao {
     @Query("SELECT * FROM expense_table")
     fun getAllExpensesLiveData() : LiveData<List<Expense>>
 
-    @Query("SELECT * FROM transactions_table_aem INNER JOIN expense_table ON transactions_table_aem.tranId = expense_table.tranId")
+    @Query("SELECT * FROM transactions_table_aem INNER JOIN expense_table ON transactions_table_aem.tranId = expense_table.tranId ORDER BY transactions_table_aem.date DESC")
     fun getExpensesAsTransactionList() : List<TransactionEntity>
 }
