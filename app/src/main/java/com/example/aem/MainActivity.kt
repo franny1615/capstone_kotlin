@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_visualize_button->{
                     currentPage.text = getText(R.string.analyze)
-                    val analyzeFragment = AnalyzeFragment()
+                    val analyzeFragment = AnalyzeFragment(expenseVM = expenseViewModel, transVM = transactionViewModel)
                     setCurrentFragment(analyzeFragment)
                 }
             }

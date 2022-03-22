@@ -16,18 +16,16 @@ import com.example.aem.R
 import com.example.aem.Transactions.TransactionEntity
 import com.example.aem.Transactions.TransactionViewModel
 
-class AnalyzeFragment : Fragment() {
+class AnalyzeFragment(private val expenseVM: ExpenseViewModel, private val transVM : TransactionViewModel) : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
-        val expenseVM = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
-        val transacVM = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         val layoutView = inflater.inflate(R.layout.analyze_fragment,container,false)
         //
         val allExpenses = expenseVM.allExpenses
-        if(allExpenses != null && allExpenses.isNotEmpty()) {
+        if(allExpenses.isNotEmpty()) {
             val transactions = arrayListOf<TransactionEntity>()
             for(expense in allExpenses) {
-                transactions.add(transacVM.getbyTransactionId(expense.tranId.toString()))
+                transactions.add(transVM.getbyTransactionId(expense.tranId.toString()))
             }
             //
             val totalsComponent = TotalsComponent(layoutView)
