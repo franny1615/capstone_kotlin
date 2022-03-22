@@ -11,25 +11,13 @@ import com.example.aem.R
 import com.example.aem.Transactions.TransactionViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class AccountsAdapter(private var dataSet: List<AccountEntity>) :
+class AccountsAdapter(private var dataSet: List<AccountEntity>, private var accountViewModel: AccountViewModel, private var transactionViewModel: TransactionViewModel) :
     RecyclerView.Adapter<AccountsAdapter.ViewHolder>() {
-    private lateinit var accountViewModel: AccountViewModel
-    private lateinit var transactionViewModel: TransactionViewModel
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val institution: TextView
-        val accountId: TextView
-        val delete: FloatingActionButton
-        init {
-            // Define click listener for the ViewHolder's View.
-            institution = view.findViewById(R.id.account_institution_textview)
-            accountId = view.findViewById(R.id.account_id_textview)
-            delete = view.findViewById(R.id.delete_button)
-        }
+        val institution: TextView = view.findViewById(R.id.account_institution_textview)
+        val accountId: TextView = view.findViewById(R.id.account_id_textview)
+        val delete: FloatingActionButton = view.findViewById(R.id.delete_button)
     }
 
     fun setData(newData: List<AccountEntity>) {
@@ -41,17 +29,13 @@ class AccountsAdapter(private var dataSet: List<AccountEntity>) :
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.accounts_cardview, viewGroup, false)
-        accountViewModel = ViewModelProvider((view.context as FragmentActivity?)!!).get(
-            AccountViewModel::class.java)
-        transactionViewModel = ViewModelProvider((view.context as FragmentActivity?)!!).get(
-            TransactionViewModel::class.java)
         return ViewHolder(view)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.institution.text = dataSet.get(position).institution
-        val id = "Id:" + dataSet.get(position).id
+        viewHolder.institution.text = dataSet[position].institution
+        val id = "Id:" + dataSet[position].id
         viewHolder.accountId.text = id
         viewHolder.delete.setOnClickListener {
             accountViewModel.deleteBankAccount(dataSet[position])

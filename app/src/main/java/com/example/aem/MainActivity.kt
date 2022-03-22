@@ -8,10 +8,13 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import com.example.aem.Accounts.AccountViewModel
 import com.example.aem.Accounts.AccountsFragment
 import com.example.aem.Analyze.AnalyzeFragment
 import com.example.aem.Expense.ExpenseFragment
 import com.example.aem.Transactions.TransactionFragment
+import com.example.aem.Transactions.TransactionViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -30,30 +33,34 @@ class MainActivity : AppCompatActivity() {
         }
         // navigation panel logic
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavView)
-        val accountsFragm = AccountsFragment()
-        val transacsFragm = TransactionFragment()
-        val expensesFragm = ExpenseFragment()
-        val analyzeFragm = AnalyzeFragment()
+        //
+        val accountsViewModel = ViewModelProvider(this)[AccountViewModel::class.java]
+        val transactionViewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
+        val accountsFragment = AccountsFragment(accountsViewModel,transactionViewModel)
+        //
         val currentPage = findViewById<TextView>(R.id.page_title_textview)
         currentPage.text = getText(R.string.accounts)
-        setCurrentFragment(accountsFragm)
+        setCurrentFragment(accountsFragment)
         bottomNavView.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.nav_account_button->{
                     currentPage.text = getText(R.string.accounts)
-                    setCurrentFragment(accountsFragm)
+                    setCurrentFragment(accountsFragment)
                 }
                 R.id.nav_expense_button->{
                     currentPage.text = getText(R.string.expenses)
-                    setCurrentFragment(expensesFragm)
+                    val expensesFragment = ExpenseFragment()
+                    setCurrentFragment(expensesFragment)
                 }
                 R.id.nav_transaction_button->{
                     currentPage.text = getText(R.string.transactions)
-                    setCurrentFragment(transacsFragm)
+                    val transFragment = TransactionFragment()
+                    setCurrentFragment(transFragment)
                 }
                 R.id.nav_visualize_button->{
                     currentPage.text = getText(R.string.analyze)
-                    setCurrentFragment(analyzeFragm)
+                    val analyzeFragment = AnalyzeFragment()
+                    setCurrentFragment(analyzeFragment)
                 }
             }
             true
