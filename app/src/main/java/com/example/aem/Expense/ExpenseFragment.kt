@@ -37,7 +37,7 @@ class ExpenseFragment: Fragment() {
         val expenses = arrayListOf<TransactionEntity>()
         expenses.addAll(list)
         if(expenses.isNotEmpty()){
-            val adapter = TransactionAdapter(expenses,activityFrom)
+            val adapter = TransactionAdapter(expenses,activityFrom, expenseViewModel)
             expenseViewModel.allExpensesLiveData.observe(viewLifecycleOwner) {
                 adapter.setData(expenses)
             }

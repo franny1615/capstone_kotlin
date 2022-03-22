@@ -13,6 +13,7 @@ import com.example.aem.Accounts.AccountViewModel
 import com.example.aem.Accounts.AccountsFragment
 import com.example.aem.Analyze.AnalyzeFragment
 import com.example.aem.Expense.ExpenseFragment
+import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.Transactions.TransactionFragment
 import com.example.aem.Transactions.TransactionViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -36,7 +37,8 @@ class MainActivity : AppCompatActivity() {
         //
         val accountsViewModel = ViewModelProvider(this)[AccountViewModel::class.java]
         val transactionViewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
-        val accountsFragment = AccountsFragment(accountsViewModel,transactionViewModel)
+        val expenseViewModel = ViewModelProvider(this)[ExpenseViewModel::class.java]
+        val accountsFragment = AccountsFragment(accountsViewModel = accountsViewModel, transactionViewModel = transactionViewModel)
         //
         val currentPage = findViewById<TextView>(R.id.page_title_textview)
         currentPage.text = getText(R.string.accounts)
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_transaction_button->{
                     currentPage.text = getText(R.string.transactions)
-                    val transFragment = TransactionFragment()
+                    val transFragment = TransactionFragment(accountViewModel = accountsViewModel, transactionsViewModel = transactionViewModel, expenseViewModel = expenseViewModel)
                     setCurrentFragment(transFragment)
                 }
                 R.id.nav_visualize_button->{

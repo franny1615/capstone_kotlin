@@ -9,7 +9,7 @@ import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.R
 
-class SumTransactionsDialogFragment(val itemId: String) : DialogFragment() {
+class SumTransactionsDialogFragment(private val itemId: String, private val transactionViewModel: TransactionViewModel, private val expenseViewModel: ExpenseViewModel) : DialogFragment() {
     private val categoryMap = mutableMapOf<String,ArrayList<TransactionEntity>>()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -37,24 +37,22 @@ class SumTransactionsDialogFragment(val itemId: String) : DialogFragment() {
     }
 
     private fun createCategoryCharSequence() : ArrayList<CharSequence> {
-        val transactionVM = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
-        var categoryTotals = transactionVM.getCategoryTotals(itemId)
+        var categoryTotals = transactionViewModel.getCategoryTotals(itemId)
         var tries = 0
         while(categoryTotals.isEmpty() && (tries < 100)) {
-            categoryTotals = transactionVM.getCategoryTotals(itemId)
+            categoryTotals = transactionViewModel.getCategoryTotals(itemId)
             tries++
         }
         val arrayVersion = arrayListOf<CharSequence>()
         for(category in categoryTotals) {
             val roundedAmount = "%.2f".format(category.amount)
             arrayVersion.add("${category.category}, $${roundedAmount}")
-            categoryMap[category.category] = transactionVM.getTransByCatAndItemId(itemId,category.category)
+            categoryMap[category.category] = transactionViewModel.getTransByCatAndItemId(itemId,category.category)
         }
         return arrayVersion
     }
 
     private fun addSelectedExpenses(selected : ArrayList<Int>) {
-        val expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
         val keys = categoryMap.keys
         for(index in selected) {
             val selct = categoryMap[keys.elementAt(index)]

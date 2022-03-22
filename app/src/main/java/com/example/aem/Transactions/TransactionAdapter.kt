@@ -16,80 +16,16 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activityFrom: String) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
+class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activityFrom: String, private val expenseViewModel: ExpenseViewModel) : RecyclerView.Adapter<TransactionViewHolder>() {
     private lateinit var filteredList : ArrayList<TransactionEntity>
     private var copyOfDataSet = dataSet
     private var setCategory = ""
     private var setDate = false
 
-    class ViewHolder(view : View, activityFrom: String, val adapter: TransactionAdapter) : RecyclerView.ViewHolder(view) {
-        val transactionTitle: TextView = view.findViewById(R.id.transaction_title)
-        val amount: TextView = view.findViewById(R.id.transaction_amount)
-        val category: TextView = view.findViewById(R.id.transaction_category)
-        val date: TextView = view.findViewById(R.id.transaction_date)
-        var itemId = ""
-        var tranId = 0L
-        val layout: LinearLayout = view.findViewById(R.id.transaction_linearlayout)
-        private val expenseViewModel = ViewModelProvider(view.context as FragmentActivity)[ExpenseViewModel::class.java]
-        init {
-            var message = ""
-            var positiveButton = ""
-            when(activityFrom) {
-                "transaction" -> {
-                    message = "Save as expense?"
-                    positiveButton = "Save"
-                }
-                "expenses" -> {
-                    message = "Remove from expenses?"
-                    positiveButton = "Remove"
-                }
-            }
-            //
-            val alertDialog: AlertDialog = view.context.let {
-                val builder = AlertDialog.Builder(it)
-                builder.setMessage(message)
-                builder.apply {
-                    setPositiveButton(positiveButton) { dialog,_ ->
-                        when(activityFrom) {
-                            "transaction" -> doWhenIsTransactionActivity()
-                            "expenses" -> doWhenIsExpenseActivity()
-                        }
-                        dialog.dismiss()
-                    }
-                    setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.cancel()
-                    }
-                }
-                builder.create()
-            }
-            //
-            layout.setOnClickListener {
-                alertDialog.show()
-            }
-        }
-
-        private fun doWhenIsTransactionActivity() {
-            expenseViewModel.insertExpense(Expense(tranId))
-        }
-
-        private fun doWhenIsExpenseActivity() {
-            expenseViewModel.deleteExpenseByTransactionId(tranId.toString())
-            var i = 0
-            for(transaction in adapter.dataSet) {
-                if(transaction.tranId == tranId) {
-                   break
-                }
-                i++
-            }
-            adapter.dataSet.removeAt(i)
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): TransactionViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.transactions_cardview, viewGroup, false)
-        return ViewHolder(view,activityFrom,this)
+        return TransactionViewHolder(view,activityFrom,this, expenseViewModel)
     }
 
     fun setData(dataSet: ArrayList<TransactionEntity>){
@@ -98,8 +34,8 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val amnt = "$${dataSet.get(position).amount}"
+    override fun onBindViewHolder(viewHolder: TransactionViewHolder, position: Int) {
+        val amnt = "$${dataSet[position].amount}"
         viewHolder.transactionTitle.text = dataSet[position].merchant
         viewHolder.amount.text = amnt
         viewHolder.category.text = dataSet[position].category

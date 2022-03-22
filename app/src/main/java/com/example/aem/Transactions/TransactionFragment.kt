@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
@@ -20,6 +21,7 @@ import com.example.aem.Accounts.AccountEntity
 import com.example.aem.Accounts.AccountViewModel
 import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
+import com.example.aem.Networking
 import com.example.aem.R
 import org.json.JSONObject
 import java.sql.Date
@@ -29,9 +31,8 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-class TransactionFragment : Fragment() {
+class TransactionFragment(private val transactionsViewModel: TransactionViewModel, private val accountViewModel: AccountViewModel, private val expenseViewModel: ExpenseViewModel) : Fragment() {
     private lateinit var layoutView: View
-    private lateinit var transactionsViewModel: TransactionViewModel
     private lateinit var loadingCircle: ProgressBar
     private lateinit var accountSelector: Spinner
     private lateinit var itemId: String
@@ -44,7 +45,6 @@ class TransactionFragment : Fragment() {
         loadingCircle = requireActivity().findViewById(R.id.loading_circle)
         //
         transactionRecyclerView = layoutView.findViewById(R.id.transactions_recyclerview)
-        transactionsViewModel = ViewModelProvider(requireActivity())[TransactionViewModel::class.java]
         // set up spinner
         initSpinner(layoutView)
         return layoutView
@@ -52,7 +52,6 @@ class TransactionFragment : Fragment() {
 
     private fun initSpinner(layoutView: View) {
         accountSelector = layoutView.findViewById(R.id.account_selection)
-        val accountViewModel = ViewModelProvider(requireActivity())[AccountViewModel::class.java]
         val accounts = accountViewModel.allAccountsRaw
         val accountAdapter = ArrayAdapter<String>(layoutView.context, android.R.layout.simple_spinner_dropdown_item)
         if (accounts != null && accounts.isNotEmpty()) {
@@ -65,9 +64,9 @@ class TransactionFragment : Fragment() {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     if (position > 0) {
                         loadingCircle.visibility = ProgressBar.VISIBLE
-                        setListItems(position - 1, accounts, accounts[position - 1].itemId.toString())
+                        setListItems(position - 1, accounts, accounts[position - 1].itemId)
                     } else {
-                        layoutView.findViewById<RecyclerView>(R.id.transactions_recyclerview).adapter = TransactionAdapter(ArrayList(0),activityFrom)
+                        layoutView.findViewById<RecyclerView>(R.id.transactions_recyclerview).adapter = TransactionAdapter(ArrayList(0),activityFrom,expenseViewModel)
                     }
                 }
             }
@@ -84,29 +83,14 @@ class TransactionFragment : Fragment() {
         val accessToken = accounts[position].accessToken
         val trans = transactionsViewModel.getAllTransactionsByItemId(itemId)
         if (trans.isNotEmpty()) {
-            transactionRecyclerView.adapter = TransactionAdapter(trans,activityFrom)
+            transactionRecyclerView.adapter = TransactionAdapter(trans,activityFrom,expenseViewModel)
             loadingCircle.visibility = ProgressBar.INVISIBLE
         } else {
             val params = HashMap<String, String>(2)
             params["item_id"] = itId
-            params["access_token"] = accessToken!!
-            runInternetRequest("https://cap-backe.herokuapp.com/api/transactions", params, ::insertTransactions, layoutView.context
-            )
+            params["access_token"] = accessToken
+            Networking().runInternetRequest("https://cap-backe.herokuapp.com/api/transactions", params, ::insertTransactions, layoutView.context, Request.Method.POST)
         }
-    }
-
-    private fun runInternetRequest(endpoint: String, params: HashMap<String, String>, handleResponse: (JSONObject) -> Unit, context: Context) {
-        val queue = Volley.newRequestQueue(context)
-        val request: StringRequest = object : StringRequest(
-            Method.POST,
-            endpoint,
-            Response.Listener { response -> handleResponse(JSONObject(response)) },
-            Response.ErrorListener { obj: VolleyError -> obj.printStackTrace() }) {
-            override fun getParams(): Map<String, String> {
-                return params
-            }
-        }
-        queue.add(request)
     }
 
     private fun insertTransactions(resp: JSONObject) {
@@ -119,8 +103,8 @@ class TransactionFragment : Fragment() {
             transactionsViewModel.insertTransaction(trans)
             transactionArray.add(trans)
         }
-        transactionRecyclerView.adapter = TransactionAdapter(transactionArray,activityFrom)
-        SumTransactionsDialogFragment(itemId).show(this.parentFragmentManager,"CategoryTotals")
+        transactionRecyclerView.adapter = TransactionAdapter(transactionArray,activityFrom,expenseViewModel)
+        SumTransactionsDialogFragment(itemId,transactionsViewModel,expenseViewModel).show(this.parentFragmentManager,"CategoryTotals")
         loadingCircle.visibility = ProgressBar.INVISIBLE
     }
 }
