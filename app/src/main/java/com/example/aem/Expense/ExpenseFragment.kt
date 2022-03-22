@@ -24,7 +24,7 @@ import java.time.ZoneId
 import java.util.*
 import kotlin.math.exp
 
-class ExpenseFragment: Fragment() {
+class ExpenseFragment(private val expenseViewModel: ExpenseViewModel): Fragment() {
     private lateinit var layoutView: View
     private val activityFrom = "expenses"
 
@@ -32,7 +32,6 @@ class ExpenseFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         layoutView = inflater.inflate(R.layout.expense_fragment,container,false)
-        val expenseViewModel = ViewModelProvider(requireActivity())[ExpenseViewModel::class.java]
         val list = expenseViewModel.allExpensesAsTransactions
         val expenses = arrayListOf<TransactionEntity>()
         expenses.addAll(list)

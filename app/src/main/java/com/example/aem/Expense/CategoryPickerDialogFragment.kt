@@ -11,13 +11,13 @@ import com.example.aem.R
 import com.example.aem.Transactions.TransactionAdapter
 import com.example.aem.Transactions.TransactionEntity
 
-class CategoryPickerDialogFragment(val expenses: List<TransactionEntity>, val layout: View) : DialogFragment() {
+class CategoryPickerDialogFragment(private val expenses: List<TransactionEntity>, val layout: View) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // categorize expenses
         val categories = arrayListOf<String>()
         for(expense in expenses) {
             if(!categories.contains(expense.category)) {
-                categories.add(expense.category!!)
+                categories.add(expense.category)
             }
         }
         val catAsCharSeq = Array<CharSequence>(categories.size) { i -> categories[i] }
