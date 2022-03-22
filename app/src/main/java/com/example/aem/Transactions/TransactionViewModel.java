@@ -69,6 +69,17 @@ public class TransactionViewModel extends AndroidViewModel {
         return b;
     }
 
+    public ArrayList<CategoryTotal> getEntireListCategoryTotals() {
+        Future<List<CategoryTotal>> f = executorService.submit(transactionsDao::getEntireCategoryTotals);
+        ArrayList<CategoryTotal> b = new ArrayList<>();
+        try {
+            b.addAll(f.get(200, TimeUnit.MILLISECONDS));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
     public ArrayList<TransactionEntity> getTransByCatAndItemId(String item_id, String category) {
         Future<List<TransactionEntity>> f = executorService.submit(()->transactionsDao.getTransactionsBasedOnCategoryAndItemId(item_id,category));
         ArrayList<TransactionEntity> b = new ArrayList<>();

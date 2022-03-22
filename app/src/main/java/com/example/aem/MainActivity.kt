@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_expense_button->{
                     currentPage.text = getText(R.string.expenses)
-                    val expensesFragment = ExpenseFragment()
+                    val expensesFragment = ExpenseFragment(expenseViewModel = expenseViewModel,transactionViewModel = transactionViewModel)
                     setCurrentFragment(expensesFragment)
                 }
                 R.id.nav_transaction_button->{

@@ -24,7 +24,7 @@ import java.time.ZoneId
 import java.util.*
 import kotlin.math.exp
 
-class ExpenseFragment(private val expenseViewModel: ExpenseViewModel): Fragment() {
+class ExpenseFragment(private val expenseViewModel: ExpenseViewModel, private val transactionViewModel: TransactionViewModel): Fragment() {
     private lateinit var layoutView: View
     private val activityFrom = "expenses"
 
@@ -51,7 +51,7 @@ class ExpenseFragment(private val expenseViewModel: ExpenseViewModel): Fragment(
             }
             // filter by category
             layoutView.findViewById<FloatingActionButton>(R.id.category_picker).setOnClickListener {
-                CategoryPickerDialogFragment(expenses,layoutView).show(this.parentFragmentManager,"category picker")
+                CategoryPickerDialogFragment(transactionsViewModel = transactionViewModel,layout = layoutView).show(this.parentFragmentManager,"category picker")
             }
         }
         return layoutView
