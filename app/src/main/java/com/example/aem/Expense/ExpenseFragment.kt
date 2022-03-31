@@ -77,8 +77,9 @@ class ExpenseFragment(
         picker.addOnPositiveButtonClickListener {
             val startDate =
                 Instant.ofEpochMilli(it.first).atZone(ZoneId.systemDefault()).toLocalDate()
-            val endDate =
+            var endDate =
                 Instant.ofEpochMilli(it.second).atZone(ZoneId.systemDefault()).toLocalDate()
+            endDate = endDate.plusDays(1)
             val adapter: TransactionAdapter =
                 layoutView.findViewById<RecyclerView>(R.id.expense_recyclerview).adapter as TransactionAdapter
             adapter.filterByDate(startDate, endDate)
