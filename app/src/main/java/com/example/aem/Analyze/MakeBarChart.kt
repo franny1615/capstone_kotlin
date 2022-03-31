@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.aem.R
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.BarData

@@ -1,11 +1,11 @@
 package com.example.aem
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.aem.Accounts.AccountViewModel
@@ -37,30 +37,43 @@ class MainActivity : AppCompatActivity() {
         val accountsViewModel = ViewModelProvider(this)[AccountViewModel::class.java]
         val transactionViewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
         val expenseViewModel = ViewModelProvider(this)[ExpenseViewModel::class.java]
-        val accountsFragment = AccountsFragment(accountsViewModel = accountsViewModel, transactionViewModel = transactionViewModel)
+        val accountsFragment = AccountsFragment(
+            accountsViewModel = accountsViewModel,
+            transactionViewModel = transactionViewModel
+        )
         //
         val currentPage = findViewById<TextView>(R.id.page_title_textview)
         currentPage.text = getText(R.string.accounts)
         setCurrentFragment(accountsFragment)
         bottomNavView.setOnItemSelectedListener {
-            when(it.itemId) {
-                R.id.nav_account_button->{
+            when (it.itemId) {
+                R.id.nav_account_button -> {
                     currentPage.text = getText(R.string.accounts)
                     setCurrentFragment(accountsFragment)
                 }
-                R.id.nav_expense_button->{
+                R.id.nav_expense_button -> {
                     currentPage.text = getText(R.string.expenses)
-                    val expensesFragment = ExpenseFragment(expenseViewModel = expenseViewModel,transactionViewModel = transactionViewModel)
+                    val expensesFragment = ExpenseFragment(
+                        expenseViewModel = expenseViewModel,
+                        transactionViewModel = transactionViewModel
+                    )
                     setCurrentFragment(expensesFragment)
                 }
-                R.id.nav_transaction_button->{
+                R.id.nav_transaction_button -> {
                     currentPage.text = getText(R.string.transactions)
-                    val transFragment = TransactionFragment(accountViewModel = accountsViewModel, transactionsViewModel = transactionViewModel, expenseViewModel = expenseViewModel)
+                    val transFragment = TransactionFragment(
+                        accountViewModel = accountsViewModel,
+                        transactionsViewModel = transactionViewModel,
+                        expenseViewModel = expenseViewModel
+                    )
                     setCurrentFragment(transFragment)
                 }
-                R.id.nav_visualize_button->{
+                R.id.nav_visualize_button -> {
                     currentPage.text = getText(R.string.analyze)
-                    val analyzeFragment = AnalyzeFragment(expenseVM = expenseViewModel, transVM = transactionViewModel)
+                    val analyzeFragment = AnalyzeFragment(
+                        expenseVM = expenseViewModel,
+                        transVM = transactionViewModel
+                    )
                     setCurrentFragment(analyzeFragment)
                 }
             }

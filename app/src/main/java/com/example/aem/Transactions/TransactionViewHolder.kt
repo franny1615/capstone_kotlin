@@ -9,7 +9,12 @@ import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.R
 
-class TransactionViewHolder(view : View, activityFrom: String, private val adapter: TransactionAdapter, private val expenseViewModel: ExpenseViewModel) : RecyclerView.ViewHolder(view) {
+class TransactionViewHolder(
+    view: View,
+    activityFrom: String,
+    private val adapter: TransactionAdapter,
+    private val expenseViewModel: ExpenseViewModel
+) : RecyclerView.ViewHolder(view) {
     val transactionTitle: TextView = view.findViewById(R.id.transaction_title)
     val amount: TextView = view.findViewById(R.id.transaction_amount)
     val category: TextView = view.findViewById(R.id.transaction_category)
@@ -17,10 +22,11 @@ class TransactionViewHolder(view : View, activityFrom: String, private val adapt
     var itemId = ""
     var tranId = 0L
     val layout: LinearLayout = view.findViewById(R.id.transaction_linearlayout)
+
     init {
         var message = ""
         var positiveButton = ""
-        when(activityFrom) {
+        when (activityFrom) {
             "transaction" -> {
                 message = "Save as expense?"
                 positiveButton = "Save"
@@ -35,8 +41,8 @@ class TransactionViewHolder(view : View, activityFrom: String, private val adapt
             val builder = AlertDialog.Builder(it)
             builder.setMessage(message)
             builder.apply {
-                setPositiveButton(positiveButton) { dialog,_ ->
-                    when(activityFrom) {
+                setPositiveButton(positiveButton) { dialog, _ ->
+                    when (activityFrom) {
                         "transaction" -> doWhenIsTransactionActivity()
                         "expenses" -> doWhenIsExpenseActivity()
                     }
@@ -61,8 +67,8 @@ class TransactionViewHolder(view : View, activityFrom: String, private val adapt
     private fun doWhenIsExpenseActivity() {
         expenseViewModel.deleteExpenseByTransactionId(tranId.toString())
         var i = 0
-        for(transaction in adapter.dataSet) {
-            if(transaction.tranId == tranId) {
+        for (transaction in adapter.dataSet) {
+            if (transaction.tranId == tranId) {
                 break
             }
             i++

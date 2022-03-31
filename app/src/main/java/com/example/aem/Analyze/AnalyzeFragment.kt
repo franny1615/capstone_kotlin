@@ -14,20 +14,27 @@ import com.example.aem.Transactions.TransactionViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class AnalyzeFragment(private val expenseVM: ExpenseViewModel, private val transVM : TransactionViewModel) : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+class AnalyzeFragment(
+    private val expenseVM: ExpenseViewModel,
+    private val transVM: TransactionViewModel
+) : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreate(savedInstanceState)
-        val layoutView = inflater.inflate(R.layout.analyze_fragment,container,false)
+        val layoutView = inflater.inflate(R.layout.analyze_fragment, container, false)
         val allExpenses = expenseVM.allExpensesAsTransactions
-        if(allExpenses.isNotEmpty()) {
-            displayTotalTextView(layoutView,allExpenses)
+        if (allExpenses.isNotEmpty()) {
+            displayTotalTextView(layoutView, allExpenses)
             displayCategoryTotalChart(layoutView)
             displayMonthlyCharts(layoutView)
         }
         return layoutView
     }
 
-    private fun displayTotalTextView(layoutView: View,allExpenses:List<TransactionEntity>) {
+    private fun displayTotalTextView(layoutView: View, allExpenses: List<TransactionEntity>) {
         val totalTextView = layoutView.findViewById<TextView>(R.id.total_expense_textview)
         val totText = "$${"%.2f".format(TotalsComponent().getTotal(allExpenses))}"
         totalTextView.text = totText
@@ -37,18 +44,18 @@ class AnalyzeFragment(private val expenseVM: ExpenseViewModel, private val trans
         val categoryTotal = transVM.getEntireListCategoryTotals()
         val values = arrayListOf<Float>()
         val labels = arrayListOf<String>()
-        for(category in categoryTotal) {
+        for (category in categoryTotal) {
             values.add(category.amount.toFloat())
             labels.add(category.category.substringBefore(" "))
         }
-        MakeBarChart(layoutView,R.id.chart1,values,labels,"Category Total",-1,"")
+        MakeBarChart(layoutView, R.id.chart1, values, labels, "Category Total", -1, "")
     }
 
     private fun displayMonthlyCharts(layoutView: View) {
         val monthlyLayout = layoutView.findViewById<LinearLayout>(R.id.monthly_charts)
         monthlyLayout.isScrollContainer = true
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        for(i in 0..23) {
+        for (i in 0..23) {
             val current = LocalDateTime.now().minusMonths(i.toLong())
             val currentMinusThirty = current.minusDays(30)
             // relevant strings for bar chart setup
@@ -59,15 +66,27 @@ class AnalyzeFragment(private val expenseVM: ExpenseViewModel, private val trans
             val end = current.format(formatter)
             val start = currentMinusThirty.format(formatter)
             // FORMAT: YYYY-MM-DD
-            val categories = transVM.getCategoryTotalsInTimeFrame(start,end)
+            val categories = transVM.getCategoryTotalsInTimeFrame(start, end)
             //
             val values = arrayListOf<Float>()
             val labels = arrayListOf<String>()
-            for(cat in categories) {
-                values.add(cat.amount.toFloat())
-                labels.add(cat.category)
+            //
+            if (categories.isEmpty()) {
+                break
             }
-            MakeBarChart(monthlyLayout,-1,values,labels,"Category Total",resources.displayMetrics.widthPixels,barTitle)
+            for (cat in categories) {
+                values.add(cat.amount.toFloat())
+                labels.add(cat.category.substringBefore(" "))
+            }
+            MakeBarChart(
+                monthlyLayout,
+                -1,
+                values,
+                labels,
+                "Category Total",
+                resources.displayMetrics.widthPixels,
+                barTitle
+            )
         }
     }
 }

@@ -11,7 +11,11 @@ import com.example.aem.Expense.ExpenseDao
 import com.example.aem.Transactions.TransactionEntity
 import com.example.aem.Transactions.TransactionsDao
 
-@Database(entities = [AccountEntity::class, TransactionEntity::class, Expense::class], version = 1, exportSchema = false)
+@Database(
+    entities = [AccountEntity::class, TransactionEntity::class, Expense::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     // you will populate this only once
     companion object {
@@ -31,8 +35,9 @@ abstract class AppDatabase : RoomDatabase() {
             return INSTANCE
         }
     }
+
     // open up data access objects through abstract functions
-    abstract fun bankAccountDao() : AccountDao
+    abstract fun bankAccountDao(): AccountDao
     abstract fun transactionsDao(): TransactionsDao
     abstract fun expenseDao(): ExpenseDao
 }

@@ -1,34 +1,31 @@
 package com.example.aem.Transactions
 
-import android.app.AlertDialog
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aem.Expense.Expense
 import com.example.aem.Expense.ExpenseViewModel
 import com.example.aem.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
 
-class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activityFrom: String, private val expenseViewModel: ExpenseViewModel) : RecyclerView.Adapter<TransactionViewHolder>() {
-    private lateinit var filteredList : ArrayList<TransactionEntity>
+class TransactionAdapter(
+    var dataSet: ArrayList<TransactionEntity>,
+    var activityFrom: String,
+    private val expenseViewModel: ExpenseViewModel
+) : RecyclerView.Adapter<TransactionViewHolder>() {
+    private lateinit var filteredList: ArrayList<TransactionEntity>
     private var copyOfDataSet = dataSet
     private var setCategory = ""
     private var setDate = false
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): TransactionViewHolder {
         // Create a new view, which defines the UI of the list item
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.transactions_cardview, viewGroup, false)
-        return TransactionViewHolder(view,activityFrom,this, expenseViewModel)
+        val view = LayoutInflater.from(viewGroup.context)
+            .inflate(R.layout.transactions_cardview, viewGroup, false)
+        return TransactionViewHolder(view, activityFrom, this, expenseViewModel)
     }
 
-    fun setData(dataSet: ArrayList<TransactionEntity>){
+    fun setData(dataSet: ArrayList<TransactionEntity>) {
         this.dataSet = dataSet
         notifyDataSetChanged()
     }
@@ -50,17 +47,17 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
 
-    fun filterByDate(startDate : LocalDate, endDate: LocalDate) {
+    fun filterByDate(startDate: LocalDate, endDate: LocalDate) {
         filteredList = arrayListOf()
         // start >= transdate <= enddate
-        for(transaction in copyOfDataSet){
+        for (transaction in copyOfDataSet) {
             val transDate = LocalDate.parse(transaction.date, DateTimeFormatter.ISO_LOCAL_DATE)
             val goodFromBelow = transDate.isAfter(startDate) || transDate.isEqual(startDate)
             val goodFromAbove = transDate.isBefore(endDate) || transDate.isEqual(endDate)
-            if(goodFromAbove && goodFromBelow) {
-                if(setCategory == "") {
+            if (goodFromAbove && goodFromBelow) {
+                if (setCategory == "") {
                     filteredList.add(transaction)
-                } else if(transaction.category == setCategory) {
+                } else if (transaction.category == setCategory) {
                     filteredList.add(transaction)
                 }
             }
@@ -75,11 +72,11 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
         setData(copyOfDataSet)
     }
 
-    fun filterByCategory(category : String) {
-        if(setDate) {
+    fun filterByCategory(category: String) {
+        if (setDate) {
             val list = arrayListOf<TransactionEntity>()
-            for(transaction in filteredList) {
-                if(transaction.category == category) {
+            for (transaction in filteredList) {
+                if (transaction.category == category) {
                     list.add(transaction)
                 }
             }
@@ -87,8 +84,8 @@ class TransactionAdapter(var dataSet: ArrayList<TransactionEntity>, var activity
         } else {
             filteredList = arrayListOf()
             setCategory = category
-            for(transaction in copyOfDataSet) {
-                if(transaction.category == category) {
+            for (transaction in copyOfDataSet) {
+                if (transaction.category == category) {
                     filteredList.add(transaction)
                 }
             }

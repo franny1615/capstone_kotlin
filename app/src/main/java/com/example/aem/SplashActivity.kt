@@ -9,7 +9,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 
-class SplashActivity : AppCompatActivity()  {
+class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_screen)
@@ -25,6 +25,7 @@ class SplashActivity : AppCompatActivity()  {
         Handler(Looper.getMainLooper()).postDelayed({
             val goMain = Intent(this, MainActivity::class.java)
             startActivity(goMain)
-            finish() }, 2000)
+            finish()
+        }, 2000)
     }
 }
