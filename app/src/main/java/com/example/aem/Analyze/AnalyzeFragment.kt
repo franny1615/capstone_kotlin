@@ -34,7 +34,7 @@ class AnalyzeFragment(private val expenseVM: ExpenseViewModel, private val trans
     }
 
     private fun displayCategoryTotalChart(layoutView: View) {
-        val categoryTotal = transVM.entireListCategoryTotals
+        val categoryTotal = transVM.getEntireListCategoryTotals()
         val values = arrayListOf<Float>()
         val labels = arrayListOf<String>()
         for(category in categoryTotal) {

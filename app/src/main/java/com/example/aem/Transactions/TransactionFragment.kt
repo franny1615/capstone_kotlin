@@ -82,8 +82,10 @@ class TransactionFragment(private val transactionsViewModel: TransactionViewMode
         itemId = itId
         val accessToken = accounts[position].accessToken
         val trans = transactionsViewModel.getAllTransactionsByItemId(itemId)
+        val transArr = arrayListOf<TransactionEntity>()
+        transArr.addAll(trans)
         if (trans.isNotEmpty()) {
-            transactionRecyclerView.adapter = TransactionAdapter(trans,activityFrom,expenseViewModel)
+            transactionRecyclerView.adapter = TransactionAdapter(transArr,activityFrom,expenseViewModel)
             loadingCircle.visibility = ProgressBar.INVISIBLE
         } else {
             val params = HashMap<String, String>(2)

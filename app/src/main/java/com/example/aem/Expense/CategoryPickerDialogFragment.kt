@@ -15,7 +15,7 @@ import com.example.aem.Transactions.TransactionViewModel
 class CategoryPickerDialogFragment(private val transactionsViewModel: TransactionViewModel, val layout: View) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // categorize expenses
-        val categories = transactionsViewModel.entireListCategoryTotals
+        val categories = transactionsViewModel.getEntireListCategoryTotals()
         val catAsCharSeq = Array<CharSequence>(categories.size) { i -> categories[i].category }
         return activity?.let {
             val builder = AlertDialog.Builder(it)
