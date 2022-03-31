@@ -22,6 +22,7 @@ Android:
 - Googles Room abstraction layer is used to store user data
 - Volley dependency is used to run internet request to the Python backend
 - Googles Materials library is used for styling
+- MPAndroidChart by Phil Jay is used, can be found: https://github.com/PhilJay/MPAndroidChart
 
 Plaid: 
 - a developer account can be made here: https://dashboard.plaid.com/signup
@@ -57,3 +58,7 @@ Features:
 ![analysis empty](project_sample_pictures/analysis-empty.png)
 
 ![analysis pop](project_sample_pictures/analysis-pop.png)
+
+![analysis month](project_sample_pictures/analysis-month.png)
+
+![analysis month2](project_sample_pictures/analysis-month2.png)
