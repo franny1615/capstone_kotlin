@@ -90,4 +90,15 @@ public class TransactionViewModel extends AndroidViewModel {
         }
         return b;
     }
+
+    public ArrayList<CategoryTotal> getCategoryTotalsInTimeFrame(String start, String end) {
+        Future<List<CategoryTotal>> f = executorService.submit(() -> transactionsDao.getCategoryTotalsInATimeFrame(start,end));
+        ArrayList<CategoryTotal> b = new ArrayList<>();
+        try {
+            b.addAll(f.get(200, TimeUnit.MILLISECONDS));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
 }

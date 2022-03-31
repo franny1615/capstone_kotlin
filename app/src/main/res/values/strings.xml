@@ -25,4 +25,6 @@
     <string name="date_range">Date Range</string>
     <string name="category">Category</string>
     <string name="reset">Reset</string>
+    <string name="category_totals">Category Totals</string>
+    <string name="monthly_breakdown">Monthly Breakdown</string>
 </resources>
